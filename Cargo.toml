@@ -1,0 +1,5 @@
+[workspace]
+
+members = [
+    "2022/aoc_rust_2022",
+]

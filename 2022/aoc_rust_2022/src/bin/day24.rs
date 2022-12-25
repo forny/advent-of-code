@@ -3,7 +3,9 @@
 
 use std::collections::{HashMap, HashSet, VecDeque};
 
-fn parse(input: &str) -> (Vec<&[u8]>, Vec<((i32, i32), (i32, i32))>) {
+type Bots = Vec<((i32, i32), (i32, i32))>;
+
+fn parse(input: &str) -> (Vec<&[u8]>, Bots) {
     let mut v = Vec::new();
     let dirs = HashMap::from([
         (b'>', (1, 0)),
@@ -11,19 +13,19 @@ fn parse(input: &str) -> (Vec<&[u8]>, Vec<((i32, i32), (i32, i32))>) {
         (b'<', (-1, 0)),
         (b'^', (0, -1)),
     ]);
-    let mut b: Vec<((i32, i32), (i32, i32))> = Vec::new();
+    let mut b: Bots = Vec::new();
     for (y, line) in input.trim().lines().enumerate() {
         v.push(line.trim().as_bytes());
         for (x, c) in line.trim().as_bytes().iter().enumerate() {
-            if dirs.contains_key(&c) {
-                b.push(((x as i32, y as i32), dirs[&c]));
+            if dirs.contains_key(c) {
+                b.push(((x as i32, y as i32), dirs[c]));
             }
         }
     }
     (v, b)
 }
 
-fn go(v: Vec<&[u8]>, b: Vec<((i32, i32), (i32, i32))>, forgot_something: bool) -> usize {
+fn go(v: Vec<&[u8]>, b: Bots, forgot_something: bool) -> usize {
     let mut visit: VecDeque<(i32, i32, usize, bool, bool)> = VecDeque::new();
     let mut seen: HashSet<(i32, i32, usize, bool, bool)> = HashSet::new();
     let mut bots: HashSet<(i32, i32)> = HashSet::new();

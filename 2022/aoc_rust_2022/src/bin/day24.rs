@@ -48,28 +48,28 @@ fn go(v: Vec<&[u8]>, b: Bots, forgot_something: bool) -> usize {
             }
         }
 
-        let t2 = t + 1;
+        if y < 0
+            || y >= v.len() as i32
+            || v[y as usize][x as usize] == b'#'
+            || bots.contains(&(x, y))
+        {
+            continue;
+        }
+
+        let mut seen_start2 = seen_start;
+        let mut seen_end2 = seen_end;
+        if y == (v.len() as i32 - 1) && x == (v[0].len() as i32 - 2) {
+            if seen_start || !forgot_something {
+                return t;
+            } else {
+                seen_end2 = true;
+            }
+        } else if y == 0 && x == 1 && seen_end {
+            seen_start2 = true;
+        }
+
         for (dx, dy) in [(1, 0), (0, 1), (-1, 0), (0, -1), (0, 0)] {
-            let x2 = x + dx;
-            let y2 = y + dy;
-            let mut seen_start2 = seen_start;
-            let mut seen_end2 = seen_end;
-            if y2 == (v.len() as i32 - 1) && x2 == (v[0].len() as i32 - 2) {
-                if seen_start || !forgot_something {
-                    return t;
-                } else {
-                    seen_end2 = true;
-                }
-            } else if y2 == 0 && x2 == 1 && seen_end {
-                seen_start2 = true;
-            }
-            if y2 >= 0
-                && y2 < v.len() as i32
-                && v[y2 as usize][x2 as usize] != b'#'
-                && !bots.contains(&(x2, y2))
-            {
-                visit.push_back((x2, y2, t2, seen_end2, seen_start2));
-            }
+            visit.push_back((x + dx, y + dy, t + 1, seen_end2, seen_start2));
         }
     }
     0
